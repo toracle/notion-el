@@ -1,0 +1,2 @@
+* Emacs Notion cliet mode
+
