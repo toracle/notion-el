@@ -1,2 +1,2 @@
-* Emacs Notion cliet mode
+* Emacs Notion client mode
 
