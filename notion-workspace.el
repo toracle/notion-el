@@ -47,9 +47,10 @@
                                                path
                                              *notion-workspace-conf-path*))
     (erase-buffer)
-    (insert (format "(setq *notion-workspace-conf* %s)" *notion-workspace-conf*))
+    (insert (format "(setq *notion-workspace-conf* '%S)" *notion-workspace-conf*))
     (newline)
-    (save-buffer)))
+    (save-buffer)
+    t))
 
 
 (defun notion-load-workspace-conf (&optional path)
