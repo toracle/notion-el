@@ -1,13 +1,18 @@
+(require 'cl)
+
 (defvar *notion-workspace-conf*
-  nil)
+  nil
+  "An alist variable that store config of workspaces")
 
 
 (defvar *notion-current-workspace-name*
-  nil)
+  nil
+  "A string variable that store current workspace name")
 
 
 (defvar *notion-workspace-conf-path*
-  (concat user-emacs-directory "notion-conf.el"))
+  (concat user-emacs-directory "notion-conf.el")
+  "Location of notion-el configuration path")
 
 
 (defun notion-list-workspace-names (&optional conf)
@@ -23,6 +28,7 @@
 
 
 (defun notion-current-workspace-conf ()
+  "Return current workspace config."
   (when *notion-current-workspace-name*
     (cdr (assoc *notion-current-workspace-name* *notion-workspace-conf*))))
 
