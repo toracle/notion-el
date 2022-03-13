@@ -63,3 +63,5 @@
              *notion-workspace-conf-path*)))
     (when (file-readable-p p)
       (load p))))
+
+(provide 'notion-workspace)
