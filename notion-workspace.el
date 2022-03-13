@@ -24,7 +24,8 @@
 
 (defun notion-select-workspace (workspace-name)
   "Use a workspace that has WORKSPACE-NAME."
-  (setq *notion-current-workspace-name* workspace-name))
+  (when (assoc workspace-name *notion-workspace-conf*)
+    (setq *notion-current-workspace-name* workspace-name)))
 
 
 (defun notion-current-workspace-conf ()
