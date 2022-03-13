@@ -40,9 +40,9 @@
 
 (defun notion-add-workspace-conf (workspace-name secret-token)
   "Create a new workspace with WORKSPACE-NAME and SECRET-TOKEN."
-  (add-to-list '*notion-workspace-conf* (cons workspace-name
-                                              (list (cons :secret-key secret-token)
-                                                    (cons :workspace-name workspace-name)))))
+  (add-to-list '*notion-workspace-conf* `(,workspace-name
+                                          ((:secret-key . ,secret-token)
+                                           (:workspace-name . ,workspace-name)))))
 
 
 (defun notion-save-workspace-conf (&optional path)
