@@ -34,6 +34,10 @@
     (cdr (assoc *notion-current-workspace-name* *notion-workspace-conf*))))
 
 
+(defun notion-current-workspace-attribute (attribute-name)
+  (cdr (assoc attribute-name (notion-current-workspace-conf))))
+
+
 (defun notion-add-workspace-conf (workspace-name secret-token)
   "Create a new workspace with WORKSPACE-NAME and SECRET-TOKEN."
   (add-to-list '*notion-workspace-conf* (cons workspace-name
