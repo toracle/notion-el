@@ -15,6 +15,11 @@
     ("Notion-Version" . "2022-02-22")))
 
 
+(defun notion-api-encode-json (lst)
+  (encode-coding-string (json-encode-list lst)
+                        'utf-8))
+
+
 (defun notion-api-call-post (endpoint body)
   "Request POST API call."
   (let ((url-request-extra-headers (notion-api-default-headers))
@@ -37,7 +42,7 @@
 DIRECTION to sort. Possible values are either 'ascending' or 'descending'.
 TIMESTAMP to sort against."
   (notion-api-call-post "/search"
-                        (json-encode-list (notion-search-body query direction timestamp))))
+                        (notion-api-encode-json (notion-search-body query direction timestamp))))
 
 
 (defun notion-api-search-body (&optional query direction timestamp)
@@ -57,7 +62,7 @@ TIMESTAMP to sort against."
 
 (defun notion-api-create-page (title &optional parent-id)
   (notion-api-call-post "/pages"
-                        (json-encode-list (notion-api-create-page-body title parent-id))))
+                        (notion-api-encode-json (notion-api-create-page-body title parent-id))))
 
 
 (defun notion-api-create-page-body (title &optional parent-id)
