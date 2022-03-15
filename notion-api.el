@@ -20,20 +20,72 @@
                         'utf-8))
 
 
+(defun notion-api-decode-json (s)
+  (json-read-from-string (decode-coding-string s 'utf-8)))
+
+
 (defun notion-api-call-post (endpoint body)
   "Request POST API call."
   (let ((url-request-extra-headers (notion-api-default-headers))
         (url-request-method "POST")
         (url-request-data body))
-    (switch-to-buffer (url-retrieve (format "%s%s" *notion-api-v1-endpoint-base* endpoint)
-                                    (lambda (response) t)))))
+    (notion-api-decode-json
+     (notion-api-extract-response
+      (url-retrieve-synchronously (format "%s%s" *notion-api-v1-endpoint-base* endpoint)
+                                  t)))))
 
 
 (defun notion-api-call-get (endpoint)
   "Request GET API call."
   (let ((url-request-extra-headers (notion-api-default-headers)))
-    (switch-to-buffer (url-retrieve (format "%s%s" *notion-api-v1-endpoint-base* endpoint)
-                                    (lambda (response) t)))))
+    (notion-api-decode-json
+     (notion-api-extract-response
+      (url-retrieve-synchronously (format "%s%s" *notion-api-v1-endpoint-base* endpoint)
+                                  t)))))
+
+
+(defun notion-api-current-line-string ()
+  (buffer-substring (line-beginning-position)
+                    (line-end-position)))
+
+
+(defun notion-api-current-line-http-preamble ()
+  (let* ((first-line (notion-api-current-line-string))
+         (match-position (string-match "HTTP/1.+ 200 OK" first-line)))
+    (equal 0 match-position)))
+
+
+(defun notion-api-current-line-http-header ()
+  (string-match "[^ ]: .*" (notion-api-current-line-string)))
+
+
+(defun notion-api-response-body-to-string ()
+  (buffer-substring (point) (buffer-end 1)))
+
+
+(defun notion-api-extract-response (buffer)
+  ;; assert HTTP/1
+  ;; assert Key: Value <newline>
+  ;; assert empty line
+  (with-current-buffer buffer
+    (let ((m (point-marker))
+          (response nil))
+      (goto-char 0)
+
+      (unless (notion-api-current-line-http-preamble)
+        (error "Response doesn't have a proper HTTP preamble"))
+      (next-line)
+
+      (while (notion-api-current-line-http-header)
+        (next-line))
+
+      ;; skip empty line between header and body
+      (next-line)
+
+      (beginning-of-line)
+      (setq response (notion-api-response-body-to-string))
+      (goto-char m)
+      response)))
 
 
 (defun notion-api-search (&optional query direction timestamp)
@@ -42,7 +94,7 @@
 DIRECTION to sort. Possible values are either 'ascending' or 'descending'.
 TIMESTAMP to sort against."
   (notion-api-call-post "/search"
-                        (notion-api-encode-json (notion-search-body query direction timestamp))))
+                        (notion-api-encode-json (notion-api-search-body query direction timestamp))))
 
 
 (defun notion-api-search-body (&optional query direction timestamp)
