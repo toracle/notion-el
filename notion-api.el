@@ -49,13 +49,13 @@
                     (line-end-position)))
 
 
-(defun notion-api-current-line-http-preamble ()
+(defun notion-api-current-line-http-preamble-p ()
   (let* ((first-line (notion-api-current-line-string))
          (match-position (string-match "HTTP/1.+ 200 OK" first-line)))
     (equal 0 match-position)))
 
 
-(defun notion-api-current-line-http-header ()
+(defun notion-api-current-line-http-header-p ()
   (string-match "[^ ]: .*" (notion-api-current-line-string)))
 
 
@@ -72,11 +72,11 @@
           (response nil))
       (goto-char 0)
 
-      (unless (notion-api-current-line-http-preamble)
+      (unless (notion-api-current-line-http-preamble-p)
         (error "Response doesn't have a proper HTTP preamble"))
       (next-line)
 
-      (while (notion-api-current-line-http-header)
+      (while (notion-api-current-line-http-header-p)
         (next-line))
 
       ;; skip empty line between header and body
