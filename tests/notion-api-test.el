@@ -22,7 +22,7 @@
     (insert "HTTP/1.0 200 OK")
     (newline)
     (goto-char 0)
-    (should (notion-api-current-line-http-preamble-p)()))
+    (should (notion-api-current-line-http-preamble-p)))
 
   (with-temp-buffer
     (insert "Not HTTP Document")
@@ -65,4 +65,3 @@
                    (notion-api-extract-response (current-buffer))))))
 
 (provide 'notion-api-test)
-
